@@ -1,6 +1,6 @@
 {
     "name": "fast-static",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -32,7 +32,8 @@
         "uglify-js":"2.4.13",
         "node-sass":"0.8.6",
         "mime":"1.2.11",
-        "coffee-script":"1.7.1"
+        "coffee-script":"1.7.1",
+        "marked":"0.3.2"
     },
     "engines": {
         "node": ">=0.10.0"
@@ -41,7 +42,7 @@
         "type": "git",
         "url": "git://github.com/hkey1/fast-static"
     },
-    "readme":'see homepage',
+    "readme":"see homepage",
     "readmeFilename": "Readme.md",
     "bugs": {
         "url": "https://github.com/hkey1/fast-static/issues"

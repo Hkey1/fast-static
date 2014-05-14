@@ -12,7 +12,7 @@ fast-static
 
 Возможности
 -------------
-* Конвертирует: coffee, haml, less, jade, sass
+* Конвертирует: coffee, haml, less, jade, sass, md
 * Упрощенное подключение файлов через тег use
 * Автоопределение mime-type по разширению
 
@@ -167,6 +167,7 @@ haml            | compiles haml                                         | https:
 jade            | compiles jade                                         | https://github.com/visionmedia/jade
 less            | compiles less                                         | https://github.com/less/less.js
 saas            | compiles saas                                         | https://github.com/andrew/node-sass
+md              | compiles md                                           | https://github.com/chjj/marked
 use             | compiles USE tag                                      | none
 
 

@@ -11,7 +11,7 @@ That make fast-static faster then default Express/Connect static middleware.
 
 
 ##Features
-* Converts: coffee, haml, less, jade, sass
+* Converts: coffee, haml, less, jade, sass, md
 * Simple include files (use tag)
 * Autodetect mime-type
 * gzip
@@ -156,6 +156,7 @@ haml            | compiles haml                                         | https:
 jade            | compiles jade                                         | https://github.com/visionmedia/jade
 less            | compiles less                                         | https://github.com/less/less.js
 saas            | compiles saas                                         | https://github.com/andrew/node-sass
+md              | compiles md                                           | https://github.com/chjj/marked
 use             | compiles USE tag                                      |
 
 
