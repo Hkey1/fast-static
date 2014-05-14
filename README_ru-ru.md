@@ -168,7 +168,7 @@ cash            | кешировать в памяти                          
 
 Эти опции включены по умолчанию все зависимости от env
 
-Filter          |                                                       | link
+Filter          |                                                       | url
 -------------   | ----------------                                      |-------------
 coffee          | compiles coffescript                                  | https://github.com/jashkenas/coffee-script
 haml            | compiles haml                                         | https://github.com/creationix/haml-js
@@ -181,7 +181,7 @@ use             | compiles USE tag                                      | none
 
 Эти опции включены по умолчанию только на продакшене
 
-Filter          |                                                       | link
+Filter          |                                                       | url
 -------------   | ----------------                                      |-------------
 min.css         | minimify css                                          | https://github.com/GoalSmashers/clean-css
 min.js          | minimify js                                           | http://lisperator.net/uglifyjs

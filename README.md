@@ -52,7 +52,7 @@ Answer some file
 ```javascript
     fastStatic.answer(req,res,pathToFile);
 ```
-For example you nead on home page send ./static/intro/index.jade
+For example you nead on homepage send ./static/intro/index.jade
 ```javascript
     var app = require('express')();
     var fastStatic= require('fast-static');
@@ -161,7 +161,7 @@ To enable filter you nead to set options.filters[filterName]=filterOptions
 
 This filters are by default is ON
 
-Filter          |                                                       |
+Filter          |                                                       | url
 -------------   | ----------------                                      |-------------
 coffee          | compiles coffescript                                  | https://github.com/jashkenas/coffee-script
 haml            | compiles haml                                         | https://github.com/creationix/haml-js
@@ -174,7 +174,7 @@ use             | compiles USE tag                                      |
 
 This filters are is ON only on Production by default
 
-Filter          |                                                       |
+Filter          |                                                       | url
 -------------   | ----------------                                      |-------------
 min.css         | minimify css                                          | https://github.com/GoalSmashers/clean-css
 min.js          | minimify js                                           | http://lisperator.net/uglifyjs
