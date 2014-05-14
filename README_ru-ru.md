@@ -32,7 +32,7 @@ Install
 
 Middleware
 -------------
-Интерфейс аналогичен стандартному модулю static в Express/Connect
+Интерфейс аналогичен стандартному middleware static в Express/Connect
 ```javascript
     var fastStatic= require('fast-static');
     app.use(onRoot,fastStatic.use(root,options));//вместо  app.use(onRoot,app.static(root,options));
@@ -143,7 +143,7 @@ Options
 -------------
 Модуль поддерживает все опции стандартного static middleware Express/Connect http://www.senchalabs.org/connect/static.html
 
-Options         |        desc                                           | default (dev/prod)
+Options         |                                                       | default (dev/prod)
 -------------   | ----------------                                      |-------------
 maxAge          | Browser cache maxAge в миллисекундах.                 | 0
 hidden          | Возвращать скрытые файлы (начинающиеся с точки)       | false
@@ -160,7 +160,7 @@ cash            | кешировать в памяти                          
 
 Эти опции включены по умолчанию все зависимости от env
 
-Filter          |  desc                                                 | link
+Filter          |                                                       | link
 -------------   | ----------------                                      |-------------
 coffee          | compiles coffescript                                  | https://github.com/jashkenas/coffee-script
 haml            | compiles haml                                         | https://github.com/creationix/haml-js
@@ -172,7 +172,7 @@ use             | compiles USE tag                                      | none
 
 Эти опции включены по умолчанию только на продакшене
 
-Filter          | desc                                                  | link
+Filter          |                                                       | link
 -------------   | ----------------                                      |-------------
 min.css         | minimify css                                          | https://github.com/GoalSmashers/clean-css
 min.js          | minimify js                                           | http://lisperator.net/uglifyjs
@@ -190,13 +190,13 @@ inline.img.css  | вставлять маленькие картинки в css 
 
 ###Options.filters['inline.img.css']
 
-Options         |  desc                                                          | default (dev/prod)
+Options         |                                                                | default
 -------------   | ----------------                                               |-------------
 maxLen          | Если размер файла картинки меньше этого, то она будет вставлена| 4096  (4KB)
 
 ###Options.filters['use']
 
-Options         |  desc                                                          | default (dev/prod)
+Options         |                                                                | default (dev/prod)
 -------------   | ----------------                                               |-------------
 tabLen          | Длина таба в пробелах. Целоче число                            | 4
 joinFiles       | Объеденять файлы в один (css,js)                               | false/true

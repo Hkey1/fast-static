@@ -1,22 +1,28 @@
 fast-static
 ===========
+Russian: https://github.com/Hkey1/fast-static/blob/master/README_ru-ru.md
+
 Node.js module. Simple to use build automation for frontend files.
 You don't need to write specials build files or run build.
 
-But when env=production fast-static use in-memory-cash. That make fast-static faster then default Express/Connect static middleware.
+When env=production this module use in memory cash.
+That make fast-static faster then default Express/Connect static middleware.
+
+
 
 ##Features
 * Converts: coffee, haml, less, jade, sass
 * Simple include files (use tag)
-* Auto detect mime-type
+* Autodetect mime-type
+* gzip
+* browser cashing (ETag)
 
 When env=production
 * minify css, js и html
 * join files
 * inserts small images into css
-* in-memory-cash
-* gzip (with in-memory-cash)
-* browser cashing (ETag)
+* in-memory-cash (compiled files, gzip results and ETag).
+
 
 ##Install
 ```
@@ -24,12 +30,14 @@ When env=production
 ```
 
 ##Middleware
-Like static middle in Express/Connect
+Like static middleware in Express/Connect
 ```javascript
     var fastStatic= require('fast-static');
-    app.use(onRoot,fastStatic.use(root,options));//вместо  app.use(onRoot,app.static(root,options));
+    app.use(onRoot,fastStatic.use(root,options));// app.use(onRoot,app.static(root,options));
 ```
-Options is not requred param. fastStatic have options presets based on process.env.NODE_ENV. About options in the end of doc
+Options is not required param.
+fastStatic have options presets based on process.env.NODE_ENV.
+About options in the end of doc.
 
 
 Example
@@ -54,7 +62,7 @@ For example you nead on home page send ./static/intro/index.jade
     });
     app.listen(process.env.PORT);
 ```
-##Тег USE
+##USE tag
 Tag to simply listing of files.
 
 ```html
@@ -106,27 +114,27 @@ Tag to simply listing of files.
 
 ##Warnings
 ###Pathes are rel to file path in file system
-If you use fastStatic.answer you nead to specidity base tag.
+If you use fastStatic.answer you nead to add base tag.
 
 Example, if you send on homepage /static/intro/index.html, you nead to add in this file
 ```html
     <base href="http://<use>!%host%</use>/static/intro/" />
 ```
 
-###On env=production cashin is on
+###On env=production cash is on
 In this mode file not lead to changes in the responses. You nead restart service on call fastStatic.dropCash().
 
 ###Dont use on big files
 Memory is limiting. If you have directory with big files (>1-2MB) use other middleware (for example app.static()) on this dir;
 
-###HAML & JADE is static compiles
-There are no req in locals in this files
+###HAML & JADE is static
+There are no req/request in locals in this files
 
 ##Options
 Options         |                                                       | default (dev/prod)
 -------------   | ----------------                                      |-------------
 maxAge          | Browser cache maxAge in milliseconds.                 | 0
-hidden          | Allow transfer of hidden files.                       | false
+hidden          | Allow transfer of hidden files                        | false
 redirect        | Redirect to trailing "/" when the pathname is a dir   | true
 index           | Default file name                                     | 'index.html'
 env             | 'production' or 'development'                         | process.env.NODE_ENV
@@ -170,7 +178,7 @@ All filters have exts and order options.
 
 ###Options.filters['inline.img.css']
 
-Options         |                                                                | default (dev/prod)
+Options         |                                                                | default
 -------------   | ----------------                                               |-------------
 maxLen          | If len of image file >  maxLen image will not be insert in css | 4096  (4KB)
 
