@@ -70,7 +70,7 @@ Tag to simply listing of files.
     1.js
     1.css
     dir/
-        2.saas
+        2.sass
         2.coffee
         subdir1/
             3.less

@@ -75,7 +75,7 @@ Answer
     1.js
     1.css
     dir/
-        2.saas
+        2.sass
         2.coffee
         subdir1/
             3.less
@@ -156,7 +156,7 @@ Options         |                                                       | defaul
 maxAge          | Browser cache maxAge в миллисекундах.                 | 0
 hidden          | Возвращать скрытые файлы (начинающиеся с точки)       | false
 redirect        | Добавлять редиректом "/" к концу имени директории     | true
-index           | Вместо директории открывать файл с именем           | 'index.html'
+index           | Вместо директории открывать файл с именем             | 'index.html'
 env             | 'production' or 'development'                         | process.env.NODE_ENV
 gzip            | использовать gzip                                     | true
 dateHeader      | отправлять date header                                | false
@@ -223,7 +223,3 @@ joinFiles       | Объеденять файлы в один (css,js)          
         }
     });
 ```
-
-
-
-
