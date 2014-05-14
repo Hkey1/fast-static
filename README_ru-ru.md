@@ -134,7 +134,15 @@ Answer
 
 ###Не используйте для больших файлов
 Память не бесконечна и если у вас есть директория с большими файлами (больше 1-2 MB) используйте app.static() или другой аналог.
-Более того, fast-static не поддерживает закачку файлов по частям.
+Перекиньте большие файлы в специальную директорию и используйте другой middleware.
+Например,
+```javascript
+    var app = require('express')();
+    var fastStatic= require('fast-static');
+    app.use('/static',fastStatic.use('./static',options));
+    app.use('/bigFiles',app.static('./bigFiles',options));
+    app.listen(process.env.PORT);
+```
 
 ###HAML и JADE компилируются статически
 HAML и JADE компилируются статически без учета контекста запроса. req в них недоступен.

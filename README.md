@@ -12,7 +12,7 @@ That make fast-static faster then default Express/Connect static middleware.
 
 ##Features
 * Converts: coffee, haml, less, jade, sass, md
-* Simple include files (use tag)
+* Simple to include files (USE tag)
 * Autodetect mime-type
 * gzip
 * browser cashing (ETag)
@@ -101,7 +101,7 @@ Tag to simply listing of files.
         # you can use env switcher [value if env=development|value if env=production]
         ! env=[dev|prod] <br />
 
-        # Next line tels include jquery.js on development, and jquery.min.js on production
+        # Next line will be include jquery.js on development, and jquery.min.js on production
         http://site.com/jquery[|.min].js
     </USE>
 
@@ -122,13 +122,25 @@ Example, if you send on homepage /static/intro/index.html, you nead to add in th
 ```
 
 ###On env=production cash is on
-In this mode file not lead to changes in the responses. You nead restart service on call fastStatic.dropCash().
+In this mode file changes will not lead to changes in the responses.
+You nead restart service on call fastStatic.dropCash().
 
 ###Dont use on big files
-Memory is limiting. If you have directory with big files (>1-2MB) use other middleware (for example app.static()) on this dir;
+Memory is limiting.
+If you have directory with big files (>1-2MB) use other middleware (for example app.static()) on this dir;
+Move large files to some dir and use other static middleware.
+
+Example:
+```javascript
+    var app = require('express')();
+    var fastStatic= require('fast-static');
+    app.use('/static',fastStatic.use('./static',options));
+    app.use('/bigFiles',app.static('./bigFiles',options));
+    app.listen(process.env.PORT);
+```
 
 ###HAML & JADE is static
-There are no req/request in locals in this files
+There are no req/request in locals in this files.
 
 ##Options
 Options         |                                                       | default (dev/prod)
