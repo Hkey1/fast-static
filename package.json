@@ -1,6 +1,6 @@
 {
     "name": "fast-static",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "",
     "main": "./lib/index.js",
     "scripts": {
@@ -8,7 +8,7 @@
     },
     "author": "Andrey Belousoff <a.v.belousoff@gmail.com>",
     "license": "MIT",
-    "description": "Simple to use build automation for frontend files, and fast static server with memory cashing. Compiles less, sass, jade, haml and coffeescript. When env=production module minimify css, html and js, join files, inserts small images to css and cash data in memory.",
+    "description": "Simple to use build automation for frontend files. Compiles less, sass, jade, md, haml and coffeescript.",
     "keywords": [
         "css",
         "minifier",
@@ -20,7 +20,10 @@
         "sass",
         "haml",
         "coffeescript",
-        "javascript"
+        "javascript",
+        "express",
+        "middleware",
+        "md"
     ],
     "main": "index.js",
     "dependencies": {
@@ -42,7 +45,7 @@
         "type": "git",
         "url": "git://github.com/hkey1/fast-static"
     },
-    "readme":"see homepage",
+    "readme":"Simple to use build automation for frontend files, and fast static server with memory cashing. Compiles less, md, sass, jade, haml and coffeescript. \r\n\r\n When env=production module minimify css, html and js, join files, inserts small images to css and cash data in memory.",
     "readmeFilename": "Readme.md",
     "bugs": {
         "url": "https://github.com/hkey1/fast-static/issues"
