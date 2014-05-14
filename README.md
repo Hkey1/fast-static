@@ -18,7 +18,7 @@ That make fast-static faster then default Express/Connect static middleware.
 * browser cashing (ETag)
 
 When env=production
-* minify css, js и html
+* minify css, js and html
 * join files
 * inserts small images into css
 * in-memory-cash (compiled files, gzip results and ETag).
