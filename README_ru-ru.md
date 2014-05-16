@@ -1,6 +1,7 @@
 fast-static
 ===========
-Простой в использовании модуль node.js для облегчения сборки фронтенд файлов.
+Удобный модуль node.js для облегчения сборки фронтенд файлов.
+Одновременно с этим быстрый сервис для хранения статических файлов.
 
 Вступление
 -------------
@@ -22,7 +23,7 @@ fast-static
 * вставляет небольшие изображения в css
 * кеширует результаты в памяти
 * поддерживает gzip (кеширует gzip в памяти)
-* поддерживает кеш на стороне браузера (ETag)
+* кеш на стороне браузера (ETag и hash-in-url with long maxAge)
 
 Install
 -------------
@@ -84,6 +85,7 @@ Answer
             4.js
             4.css
         subdir3/5.css
+    dir2/* # All Files that compiles to css, js or html in dir2 and subdirs
 </USE>
 <html>
 <head>
@@ -95,6 +97,8 @@ Answer
     <h1>Привет, мир!</h1>
     <USE>
         #Это комментарий
+
+        bootstrap 3.1.1 # bootstrap 3.1.1 will be included from CDN (it faster)
 
         # `!` в начале строки значит вывод строки
         ! Тег Use тоже передает привет миру <br />
@@ -115,6 +119,71 @@ Answer
 </body>
 </html>
 ```
+###dir/*
+Подключает все файлы которые, конвертируються в js,css или html в директории или поддиректориях.
+Внимание: Если в этой директории хрянятся две версии файла, например минимизироанная и обычная, то подключаться обе.
+
+###Libs
+Для подключения библиотеки просто добавьте строку с ее именем и версией, например "bootstrap 3.1.1".
+
+Версия обязательна.
+
+Библиотеки подключаються из CDN. Они будут быстрее чем с вашего сервиса.
+
+В имени библиотеки регистр и сивол '-' игнорируется JQueryUI=jqueryUI=jqueryui=jquery-UI=jquery-ui.
+
+Libs: bootstrap, font-awesome, jquery, jqueryMigrate, QUnit, jqueryMobile, jqueryUi, angularJS, dojo, extCore, mootools,
+      prototype, scriptAculoUs, swfobject, Web-Font-Loader, jQueryColor jQueryColorSvgNames jQueryColorPlusNames
+
+Bootstrap, QUnit, jqueryUi, jqueryMobile имеют альтернативную версию без шаблона по умолчанию (нулевку).
+Нужно добавить ноль к имении библиотеки чтобы ее получиь например ('bootstrap-0 3.1.1' or 'bootstrap0 3.1.1').
+
+Библиотеки содержащие и css и js могут без css или js ('bootstrapJS 3.1.1' -- подключит только js).
+
+Обычная/минимифициованная версия подключаются в зависимости от env (если они есть на CDN);
+
+Версия обязательна. Списки версия:
+
+* для bootstrap http://www.bootstrapcdn.com
+* для JQuery https://code.jquery.com/
+* для других https://developers.google.com/speed/libraries/devguide
+
+##Почему f-s быстрее других Middleware?
+
+###кеш в оперативной памяти
+Компилированный файлы, gzip, and контрольные суммы храняться в памяти.
+Для ответа на запроса достаточно вернуть ссылку на закешированные дынные.
+Другому софту нужно считать и зазиповать его
+
+###быстрый кеш в браузере
+fast-static использует ускоренную версию кеша в браузере
+
+* он добавляет md5 данных файла к урлам картинок ,css, и js files.
+* если данные изменены, то изменяется мд5
+* поэтому, если в урле есть хеш, сервер при ответе говорит, чтобы браузер хранил кеш вечно и не переспрашивал изменения
+* поэтоиу браузеру не нужно посылать запросы на сервис для синхронизации (if-modified)
+
+###Итого
+Допустим у нас есть файл 1.css
+fast-static добавляет к его урлу хеш <use>1.css</use> => ``<link rel="1.css?_fs_hash=_md5_of_data_" />``
+
+Браузер запрашивает это файл впервые.
+
+Другой софт должен прочитать этот файл с диска и получить его статистику (mtime) и зазиповать ответ.
+Fast-static просто возвражает закешированные в памяти gzip данные.
+
+Поскольку хеш в урле fast-static приказывает браузеру вечно хранить этот файл и не сверять его версии;
+
+Теперь представим что браузеру снова нужен этот файл.
+
+Другой софт: браузер отправяет запрос с заголовком if-modified,
+это занимает время (ping),
+сервер проверяет mtime (немного греет диск),
+и отвечает "304 not-modified".
+Браузер считывает данные из своего кеша.
+
+Fast-static: Max-age кеша не вышед -- браузер не посылая запросы просто загружает данные из кеша.
+
 
 Обратите внимание
 -------------
@@ -161,6 +230,10 @@ env             | 'production' or 'development'                         | proces
 gzip            | использовать gzip                                     | true
 dateHeader      | отправлять date header                                | false
 cash            | кешировать в памяти                                   | false/true
+addHash         | Add Hash в url. Это значительно ускоряет кеш браузера | false/true
+hashedMaxAge    | Cash maxAge in ms when url have hash                  | 1 year: 365 * 24 * 60 * 60 * 1000
+production      | Options overwrite for env=production                  | {}
+development     | Options overwrite for env=development                 | {}
 
 ###Options.filters
 Для отключения фильтра установите options.filters[filterName]=false
@@ -186,8 +259,9 @@ Filter          |                                                       | url
 min.css         | minimify css                                          | https://github.com/GoalSmashers/clean-css
 min.js          | minimify js                                           | http://lisperator.net/uglifyjs
 min.html        | minimify html                                         | http://kangax.github.io/html-minifier/
-inline.img.css  | вставлять маленькие картинки в css                    | none
-
+inline.img.css  | вставлять маленькие картинки в css и хеш в урл других | none
+vars            | замены например {foo:bar} значит заменить %foo% на bar| {}
+libs            | addition libs. See filters/use.js                     | {}
 
 
 ###Опции фильтров
@@ -210,6 +284,8 @@ Options         |                                                               
 tabLen          | Длина таба в пробелах. Целоче число                            | 4
 joinFiles       | Объеденять файлы в один (css,js)                               | false/true
 
+
+Опции остальных фильтров см. по  ссылкам в таблице со списком фильтров.
 
 ##Ваш собственный фильтр
 ```javascript
