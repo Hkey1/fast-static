@@ -9,13 +9,13 @@ When env=production this module use in memory cash.
 That make fast-static faster then default Express/Connect static middleware.
 
 
-
 ##Features
 * Converts: coffee, haml, less, jade, sass, md
 * Simple to include files (USE tag)
+* Simple to include libs
 * Autodetect mime-type
 * gzip
-* browser cashing (ETag)
+* browser-side cashing (ETag & hash-in-url with long maxAge)
 
 When env=production
 * minify css, js and html
@@ -37,7 +37,7 @@ Like static middleware in Express/Connect
 ```
 Options is not required param.
 fastStatic have options presets based on process.env.NODE_ENV.
-About options in the end of doc.
+About options in the end of this file.
 
 
 Example
@@ -79,6 +79,7 @@ Tag to simply listing of files.
             4.js
             4.css
         subdir3/5.css
+    dir2/* # All Files that compiles to css, js or html in dir2 and subdirs
 </USE>
 
 <html>
@@ -91,6 +92,8 @@ Tag to simply listing of files.
     <h1>Hello world</h1>
     <USE>
         #this is comment
+
+        bootstrap 3.1.1 # bootstrap 3.1.1 will be included from CDN (it faster)
 
         # ! on begin of string tells echo string
         ! Hello world from Use tag <br />
@@ -111,19 +114,47 @@ Tag to simply listing of files.
 </body>
 </html>
 ```
+###dir/*
+Include all files that can convert to js,css or html in dir or subdirs.
+Warning: if you have both mininfied and non-minified file versions in dir -- fast-static will include both!!!
+
+###Libs
+To include lib just enter string with name and version. "bootstrap 3.1.1".
+
+Version is required.
+
+Libs is included from CDN. It fast, faster then from you service.
+
+In lib names case and symbol '-' is ignored JQueryUI=jqueryUI=jqueryui=jquery-UI=jquery-ui.
+
+Libs: bootstrap, font-awesome, jquery, jqueryMigrate, QUnit, jqueryMobile, jqueryUi, angularJS, dojo, extCore, mootools,
+      prototype, scriptAculoUs, swfobject, Web-Font-Loader, jQueryColor, jQueryColorSvgNames, jQueryColorPlusNames
+
+Bootstrap, QUnit, jqueryUi, jqueryMobile have alternative version without default template.
+Add 0 to the end of libname ('bootstrap-0 3.1.1' or 'bootstrap0 3.1.1').
+
+Libs with CSS and JS have css and js versions ('bootstrapJS 3.1.1').
+
+When env=prod... will be included min file (if CDN have min file);
+
+Version is required. Versions lists:
+* for bootstrap http://www.bootstrapcdn.com
+* for JQuery https://code.jquery.com/
+* for other https://developers.google.com/speed/libraries/devguide
+
 
 ##Warnings
 ###Pathes are rel to file path in file system
-If you use fastStatic.answer you nead to add base tag.
+If you use fastStatic.answer you need to add base tag.
 
-Example, if you send on homepage /static/intro/index.html, you nead to add in this file
+Example, if you send on homepage /static/intro/index.html, you need to add in this file
 ```html
     <base href="http://<use>!%host%</use>/static/intro/" />
 ```
 
 ###On env=production cash is on
 In this mode file changes will not lead to changes in the responses.
-You nead restart service on call fastStatic.dropCash().
+You need to restart service or call fastStatic.dropCash().
 
 ###Dont use on big files
 Memory is limiting.
@@ -142,7 +173,43 @@ Example:
 ###HAML & JADE is static
 There are no req/request in locals in this files.
 
+##Why it faster than other middleware?
+
+###in-memory-cash
+Compiled files, gzip, and cs are cashed in memory.
+To answer fast-static only need to return link to buffer with data.
+Other middleware need to read file from and gzip it.
+
+###fast browser-side-cash
+fast-static use fast browser-side-cash implimentation.
+* fast-static adds md5 of data to URLs of images,css,js files (not html).
+* if file changed url also will be changed
+* if file url have md5 fast-static sets large maxAge
+* so browser without any request loads data from cash
+
+###Summary
+For example we have 1.css.
+fast-static add to url hash <use>1.css</use> => ``<link rel="1.css?_fs_hash=_md5_of_data_" />``
+
+Browser requests this file (first time).
+
+Other middleware need to read this file from disc and get file stats, and gzip answer.
+Fast-static just return cashed in memory gzipped data, no disk usage.
+
+Fast-static adds cash maxAge header with large value (because Fast-static find hash in url);
+
+If browser need this file again.
+
+Other middleware: browser send request with header if-modified,
+it takes some time (ping),
+middleware checks file mtime (small disc usage),
+and answer "304 not-modified".
+Browser load page from cash.
+
+Fast-static: Max-age not expired -- browser not send any requests just load from cash.
+
 ##Options
+
 Options         |                                                       | default (dev/prod)
 -------------   | ----------------                                      |-------------
 maxAge          | Browser cache maxAge in milliseconds.                 | 0
@@ -153,6 +220,16 @@ env             | 'production' or 'development'                         | proces
 gzip            | use gzip                                              | true
 dateHeader      | send date header                                      | false
 cash            | cash                                                  | false/true
+addHash         | Add Hash to file url. Its speed-up browser side cash. | false/true
+hashedMaxAge    | Cash maxAge in ms when url have hash                  | 1 year: 365 * 24 * 60 * 60 * 1000
+production      | Options overwrite for env=production                  | {}
+development     | Options overwrite for env=development                 | {}
+
+
+###addHash/hashedMaxAge
+addHash/hashedMaxAge applies to images in css files and js (coffee) and css(less,sass) when they included from use Tag.
+url(file.png) -> url(file.png?_fc_hash=_MD5_of_File_Content_)
+If file content changed -- url will be changed. That`s why we can use very long MaxAge.
 
 ###Options.filters
 To disable filter you nead to set options.filters[filterName]=false
@@ -174,12 +251,12 @@ use             | compiles USE tag                                      |
 
 This filters are is ON only on Production by default
 
-Filter          |                                                       | url
--------------   | ----------------                                      |-------------
-min.css         | minimify css                                          | https://github.com/GoalSmashers/clean-css
-min.js          | minimify js                                           | http://lisperator.net/uglifyjs
-min.html        | minimify html                                         | http://kangax.github.io/html-minifier/
-inline.img.css  | insert small images into css                          |
+Filter          |                                                           | url
+-------------   | ----------------                                          |-------------
+min.css         | minimify css                                              | https://github.com/GoalSmashers/clean-css
+min.js          | minimify js                                               | http://lisperator.net/uglifyjs
+min.html        | minimify html                                             | http://github.com/kangax/html-minifier/
+inline.img.css  | insert small images into css, and hash to urls of others  |
 
 
 
@@ -201,14 +278,20 @@ Options         |                                                               
 -------------   | ----------------                                               |-------------
 tabLen          | Len of tab symbol in spaces                                    | 4
 joinFiles       | join files into one                                            | false/true
+vars            | Replacer {foo:bar} tells to replace %foo% to bar               | {}
+libs            | addition libs. See filters/use.js                              | {}
 
+Other filters options see by links in table with list of filters
 
 ##Writing you own filter
 ```javascript
     fastStatic.addFilter({
         exts:'tea,littea',// list of in extension
         ext:'js',// out extension or false if not changes
-        order:100,// order 100 for compilers, 300 for minimizators
+        order:100,// order=
+            //100 for compilers,
+            //300 for minimizators
+            //200 for small format updates (as use TAG)
         fun:function(data,filename, ext, cb){
             //..
             cb(err,data);
